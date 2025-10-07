@@ -1,0 +1,108 @@
+# ------------------------------
+# Python
+# ------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+.env/
+.venv/
+env/
+ENV/
+pip-wheel-metadata/
+
+# IDE & editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & cache
+*.log
+*.tmp
+*.bak
+*.cache/
+*.dat
+*.db
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ------------------------------
+# AI / ML Specific
+# ------------------------------
+# Model weights & checkpoints
+*.h5
+*.hdf5
+*.ckpt
+*.pt
+*.pth
+*.tflite
+*.onnx
+*.pb
+*.bin
+*.model
+
+# Training runs & experiment logs
+runs/
+logs/
+wandb/
+mlruns/
+tensorboard/
+output/
+results/
+
+# Large datasets
+# data/
+datasets/
+*.csv
+*.tsv
+*.json
+*.parquet
+
+# ------------------------------
+# Environment & secrets
+# ------------------------------
+# Environment variables
+.env
+*.env
+
+# API keys / credentials
+apikey.txt
+secrets.json
+config.yaml
+config.json
+
+# ------------------------------
+# Other optional ignores
+# ------------------------------
+# Cache or compiled artifacts
+__cache__/
+*.npy
+*.npz
+*.joblib
+*.pkl
+
+# Temporary notebooks or experiments
+sandbox/
+scratch/
+temp/
+tmp/
+
+# Database
+chroma_db/
