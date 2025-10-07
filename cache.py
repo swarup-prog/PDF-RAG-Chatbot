@@ -16,10 +16,10 @@ class RedisSemanticCache:
     vec1, vec2 = np.array(vec1), np.array(vec2)
     return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
   
-  async def find_similar(self, query):
+  def find_similar(self, query):
         """Find semantically similar cached query."""
         query_emb = self.embedder.embed_query(query)
-        all_keys = await self.client.keys("semcache:*") 
+        all_keys = self.client.keys("semcache:*") 
 
         for key in all_keys:
             data = self.client.hgetall(key)
@@ -28,3 +28,10 @@ class RedisSemanticCache:
             if sim >= self.threshold:
                 return data[b'answer'].decode("utf-8")
   
+  def store(self, query, answer):
+    emb = np.array(self.embedder.embed_query(query), dtype=np.float32)
+    key = f"semcache:{sha256(query.encode()).hexdigest()}"
+    self.client.hset(key, mapping={
+      "answer": answer,
+      "emb": emb.tobytes()
+    })

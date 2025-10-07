@@ -1,4 +1,3 @@
-import subprocess
 from vectorstore import vectorstore_init
 from llm import generate_answer
 from memory import load_memory, save_memory
@@ -21,33 +20,32 @@ def chat():
     results = vector_store.similarity_search(query, k=K)
     context_docs = "\n\n".join([doc.page_content for doc in results])
 
-    # Use convo memory
     # Use recent conversation as memory
     memory_context = "\n".join(
       [f"User: {m['user']}\nAssistant: {m['bot']}" for m in memory[-3:]]
     )
 
-    prompt= f"""
-    You are a helpful assistant that answers based on the provided document which also have memory of past interactions.
-    - Use the conversation and document context to answer.
-    - Vary the response length and style depending on the question.
-    - Be **direct and relevant** — avoid repeating information or giving long introductions.
-    - Do **not** assume.
-    - If the question is unrelated to the document, reply politely say that you can only answer based on the document.
-    - Do **not** explain how you work.
+    prompt = f"""
+    You are a concise and factual assistant.
+    Use only the provided document (primary) and chat history (secondary).
+    Do not repeat or explain how you work.
+    If unsure or off-topic, say: "The document doesn’t mention that."
 
-    Conversation: 
+    Be direct and polite.
+
+    Chat:
     {memory_context}
 
-    Document Context: 
+    Document:
     {context_docs}
 
-    User Question: {query}
-
-    Assistant:
+    Question: {query}
+    Answer:
     """
 
-    answer = generate_answer(prompt)
+
+
+    answer = generate_answer(prompt, query)
     memory.append({"user": query, "bot": answer})
     save_memory(memory)
 
