@@ -28,10 +28,23 @@ class RedisSemanticCache:
             if sim >= self.threshold:
                 return data[b'answer'].decode("utf-8")
   
-  def store(self, query, answer):
+  def store(self, query, answer, expiry_seconds=86400):
+    """
+    Store a query-answer pair in Redis with optional expiry.
+    
+    Args:
+        query (str): User query text.
+        answer (str): Model-generated answer.
+        expiry_seconds (int): Time in seconds before cache expires (default: 1 day).
+    """
     emb = np.array(self.embedder.embed_query(query), dtype=np.float32)
     key = f"semcache:{sha256(query.encode()).hexdigest()}"
+
+    # Store embedding + answer in hash
     self.client.hset(key, mapping={
-      "answer": answer,
-      "emb": emb.tobytes()
+        "answer": answer,
+        "emb": emb.tobytes()
     })
+
+    # Set expiry (TTL) on this key
+    self.client.expire(key, expiry_seconds)

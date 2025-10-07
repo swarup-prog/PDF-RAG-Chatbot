@@ -1,10 +1,10 @@
-from vectorstore import vectorstore_init
-from llm import generate_answer
+from rag import vectorstore
+from llm import generate_answer, build_prompt
 from memory import load_memory, save_memory
 from config import K
 
 def chat():
-  vector_store = vectorstore_init()
+  vector_store = vectorstore()
   memory = load_memory()
 
   print("\nRAG Chatbot ready! Type 'exit' to quit. \n")
@@ -18,32 +18,14 @@ def chat():
 
     # Retrive revalant chunks
     results = vector_store.similarity_search(query, k=K)
-    context_docs = "\n\n".join([doc.page_content for doc in results])
+    docs_context = "\n\n".join([doc.page_content for doc in results])
 
     # Use recent conversation as memory
     memory_context = "\n".join(
       [f"User: {m['user']}\nAssistant: {m['bot']}" for m in memory[-3:]]
     )
 
-    prompt = f"""
-    You are a concise and factual assistant.
-    Use only the provided document (primary) and chat history (secondary).
-    Do not repeat or explain how you work.
-    If unsure or off-topic, say: "The document doesn’t mention that."
-
-    Be direct and polite.
-
-    Chat:
-    {memory_context}
-
-    Document:
-    {context_docs}
-
-    Question: {query}
-    Answer:
-    """
-
-
+    prompt = build_prompt(query, memory_context, docs_context)
 
     answer = generate_answer(prompt, query)
     memory.append({"user": query, "bot": answer})
