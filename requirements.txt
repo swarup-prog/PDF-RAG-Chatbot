@@ -8,3 +8,4 @@ pypdf
 tiktoken
 redis
 ollama
+types-redis
