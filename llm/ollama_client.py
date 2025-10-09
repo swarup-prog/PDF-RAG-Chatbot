@@ -3,11 +3,11 @@ from cache import RedisSemanticCache
 from .response_streamer import stream
 from .token_manager import get_token_usage
 
-cache = RedisSemanticCache()
+cache_store = RedisSemanticCache()
 
 def generate_answer(prompt: str, user_query: str) -> str:
     # check cache for similar query responses
-    cached_response = cache.find_similar(user_query)
+    cached_response = cache_store.find_similar(user_query)
     if cached_response:
         print("Cache hit! Returning cached response.\n")
         return cached_response
@@ -42,5 +42,5 @@ def generate_answer(prompt: str, user_query: str) -> str:
 
     output = "".join(output_chunks).strip()
     get_token_usage(prompt, output)
-    cache.store(user_query, output)
+    cache_store.store(user_query, output)
     return output
