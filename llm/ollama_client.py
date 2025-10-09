@@ -10,7 +10,6 @@ def generate_answer(prompt: str, user_query: str) -> str:
     cached_response = cache.find_similar(user_query)
     if cached_response:
         print("Cache hit! Returning cached response.\n")
-        print(cached_response)
         return cached_response
 
     print("\nGenerating response...\n")
@@ -20,7 +19,12 @@ def generate_answer(prompt: str, user_query: str) -> str:
         response_stream = ollama.chat(
             model="llama3",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": """
+                    You are a helpful assistant that answers based on the provided document and remembers past interactions.
+                    - Be direct and concise.
+                    - Use memory and document context for answers.
+                    - If unrelated, say you can only answer based on the document.
+                """},
                 {"role": "user", "content": prompt}
             ],
             stream=True
