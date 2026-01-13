@@ -1,5 +1,4 @@
 import redis
-import json
 from hashlib import sha256
 from config import REDIS_HOST, REDIS_PORT, REDIS_DB
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
